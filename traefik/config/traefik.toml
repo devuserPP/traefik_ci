@@ -1,0 +1,36 @@
+logLevel = "DEBUG"
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.dashboard]
+    address = ":8090"
+    [entryPoints.dashboard.auth]
+      [entryPoints.dashboard.auth.basic]
+        users = ["admin:$apr1$js2mxk2h$0uWZfLXZ/P.n3kYffr4Vq1"]
+  [entryPoints.http]
+    address = ":90"
+      # [entryPoints.http.redirect]
+      #   entryPoint = "https"
+  # [entryPoints.https]
+  #   address = ":443"
+  #     [entryPoints.https.tls]
+
+[api]
+entrypoint="dashboard"
+debug = true
+
+# [acme]
+# email = "my_email@example.com"
+# storage = "acme.json"
+# entryPoint = "https"
+# onHostRule = true
+#   [acme.httpChallenge]
+#   entryPoint = "http"
+
+[docker]
+domain = "dev.local"
+# watch = true # <---- useful only for swarm
+#network = "web"
+#If set to false, containers that don't have a traefik.enable=true label will be ignored
+exposedbydefault = false
+endpoint = "unix:///var/run/docker.sock"

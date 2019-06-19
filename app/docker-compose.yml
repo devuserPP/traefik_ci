@@ -1,0 +1,126 @@
+#https://www.tikalk.com/posts/2017/10/10/traefik-basics-with-docker-compose/
+# run first $docker-compose up -d --force-recreate in folder "traefik", at this time network "traefik_webgateway" does not exists
+# run this again with $docker-compose up -d --force-recreate
+# troubleshooting with $docker logs -f docker_xxx
+# log into container $docker exec -it docker_xxx
+
+#Used tags:
+#$Traefik\domain 
+#- dev.local comes from ../config/traefik.toml {docker.domain = "dev.local"}
+#My_DB/
+#-for postgresql database, its not mandatory
+#$My_DB/Windows10 PRO 
+#-solution for Windows 10 PRO
+version: '3.7'
+
+networks:
+  private:
+  public:  
+    external:
+      name: traefik_webgateway
+
+volumes:
+  jenkins-data:            
+  pgdata: #My_DB/Windows10 PRO 
+    external: true  #My_DB/Windows10 PRO 
+
+services:
+  
+  My_Jenkins:
+    image: jenkinsci/blueocean:1.16.0
+    container_name: docker_jenkins
+    restart: always
+    # check if the path realy exists on host 
+    # $cd $PWD/data/jenkins/home-data 
+    volumes:
+      - ./data/jenkins/home-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock      
+      - ./data/jenkins/config:/usr/share/jenkins/ref/init.groovy.d/ 
+    labels:
+      - "traefik.backend=jenkins"
+      - "traefik.enable=true"
+      - "traefik.port=8080"
+      - "traefik.docker.network=traefik_webgateway"
+      - "traefik.jenkins.frontend.rule=Host:jenins.dev.local" #Traefik\domain
+      - "traefik.jenkins.frontend.rule=PathPrefix:/jenkins"      
+    networks:
+      - private
+      - public      
+    environment:
+      JENKINS_OPTS: --prefix=/jenkins
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dhudson.footerURL=http://dev.local" #Traefik\domain
+      
+  My_Nexus:
+    image: sonatype/nexus3:3.16.2
+    container_name: docker_nexus
+    restart: always
+    volumes:
+      - ./data/nexus/nexus-data:/nexus-data
+    environment:
+      - NEXUS_CONTEXT=nexus
+    networks: 
+      - private
+      - public
+    labels:
+      - traefik.backend=nexus
+      - traefik.docker.network=traefik_webgateway
+      - traefik.frontend.rule=Host:nexus.dev.local #Traefik\domain
+      - traefik.port=8081
+      - traefik.enable=true
+      - traefik.nexus.frontend.rule=PathPrefix:/nexus
+
+
+  My_Sonar:
+    depends_on:
+      - 'My_DB' #My_DB
+    image: sonarqube:7.7-community
+    container_name: docker_sonar
+    restart: always 
+    networks: 
+      - private
+      - public   
+    environment: 
+      sonar.web.context: /sonar
+      sonar.jdbc.username: sonar #My_DB
+      sonar.jdbc.password: sonar #My_DB
+      sonar.jdbc.url: jdbc:postgresql://docker_postgres:5432/sonar #My_DB
+    labels:
+      - traefik.backend=sonar
+      - traefik.docker.network=traefik_webgateway
+      - traefik.frontend.rule=Host:sonar.dev.local #Traefik\domain
+      - traefik.port=9000
+      - traefik.enable=true
+      - traefik.sonar.frontend.rule=PathPrefix:/sonar
+
+  My_DB: #My_DB
+    image: postgres:11.3-alpine #My_DB
+    container_name: docker_postgres #My_DB
+    restart: always #My_DB
+    #My_DB
+    networks:  #My_DB
+      - private #My_DB
+      - public #My_DB
+     #My_DB
+    environment:  #My_DB
+      POSTGRES_USER: sonar #My_DB
+      POSTGRES_PASSWORD: sonar #My_DB
+      POSTGRES_DB: sonar #My_DB
+ 
+ #My_DB/Linux Solution
+ #   volumes: #My_DB
+ #     - ./data/postgres/data:/var/lib/postgresql #My_DB
+ 
+
+
+# My_DB/Windows10 PRO 
+# error data directory "/var/lib/postgresql/data" has wrong ownership  
+# you have to create volume manualy with $docker volume create --name=pgdata
+# than you can run $docker-compose up -d --force-recreate
+#    
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
+
+
+
+
+
