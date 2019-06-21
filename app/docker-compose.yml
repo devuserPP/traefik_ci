@@ -62,7 +62,7 @@ services:
       JENKINS_OPTS: --prefix=/jenkins
       JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dhudson.footerURL=http://dev.local" #Traefik\domain
       
-  My_Nexus:
+  my_nexus:
     image: sonatype/nexus3:3.16.2
     container_name: docker_nexus
     restart: always
@@ -115,7 +115,7 @@ services:
       - traefik.enable=true
       - traefik.sonar.frontend.rule=PathPrefix:/sonar
 
-  My_DB: #My_DB
+  my_db: #My_DB
     image: postgres:11.3-alpine #My_DB
     container_name: docker_postgres #My_DB
     restart: always #My_DB
