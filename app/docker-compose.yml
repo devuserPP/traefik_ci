@@ -1,16 +1,28 @@
-#https://www.tikalk.com/posts/2017/10/10/traefik-basics-with-docker-compose/
 # run first $docker-compose up -d --force-recreate in folder "traefik", at this time network "traefik_webgateway" does not exists
 # run this again with $docker-compose up -d --force-recreate
 # troubleshooting with $docker logs -f docker_xxx
 # log into container $docker exec -it docker_xxx
 
 #Used tags:
+
 #$Traefik\domain 
 #- dev.local comes from ../config/traefik.toml {docker.domain = "dev.local"}
+
 #My_DB/
 #-for postgresql database, its not mandatory
+
 #$My_DB/Windows10 PRO 
 #-solution for Windows 10 PRO
+# volumes in Windows works diferently
+
+#$Sonar_wait
+#-Sonar will wait until postgress will be up
+#-added sh script in Dockerfile for Sonar
+
+#$Sonar_wait_old
+#- Sonar solution working for Docker compose until version 2.4
+#- Added depens on + condition for healthy check in service my_sonar
+#- Added healthy check in service my_db
 version: '3.7'
 
 networks:
@@ -70,20 +82,31 @@ services:
       - traefik.nexus.frontend.rule=PathPrefix:/nexus
 
 
-  My_Sonar:
-    depends_on:
-      - 'My_DB' #My_DB
-    image: sonarqube:7.7-community
+  my_sonar:
+    build: #Sonar_wait
+      context: ./data/sonar/config #Sonar_wait
+    
+    #depends_on:                    #Sonar_wait_old
+    # - 'My_DB'                     #Sonar_wait_old
+    # - condition: service_healthy  #Sonar_wait_old
+
+
+    image: my_sonar #Sonar_wait/ definittion in data/sonar/Dockerfile
     container_name: docker_sonar
     restart: always 
     networks: 
       - private
       - public   
+    
+   
     environment: 
       sonar.web.context: /sonar
       sonar.jdbc.username: sonar #My_DB
       sonar.jdbc.password: sonar #My_DB
       sonar.jdbc.url: jdbc:postgresql://docker_postgres:5432/sonar #My_DB
+   
+    entrypoint: /wait-for-postgres.sh postgres 5432 #Sonar_wait
+   
     labels:
       - traefik.backend=sonar
       - traefik.docker.network=traefik_webgateway
@@ -96,15 +119,22 @@ services:
     image: postgres:11.3-alpine #My_DB
     container_name: docker_postgres #My_DB
     restart: always #My_DB
-    #My_DB
+    
     networks:  #My_DB
       - private #My_DB
       - public #My_DB
-     #My_DB
+    
     environment:  #My_DB
       POSTGRES_USER: sonar #My_DB
       POSTGRES_PASSWORD: sonar #My_DB
       POSTGRES_DB: sonar #My_DB
+
+  healthcheck:                                          #Sonar_wait_old
+      test: ["CMD-SHELL", "pg_isready -U postgres"]     #Sonar_wait_old
+      interval: 5s                                      #Sonar_wait_old
+      timeout: 5s                                       #Sonar_wait_old
+      retries: 5                                        #Sonar_wait_old
+
  
  #My_DB/Linux Solution
  #   volumes: #My_DB
@@ -117,10 +147,7 @@ services:
 # you have to create volume manualy with $docker volume create --name=pgdata
 # than you can run $docker-compose up -d --force-recreate
 #    
-    volumes: 
-      - pgdata:/var/lib/postgresql/data
-
-
-
+  volumes: 
+    - pgdata:/var/lib/postgresql/data
 
 
