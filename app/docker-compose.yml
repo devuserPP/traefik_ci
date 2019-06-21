@@ -38,7 +38,7 @@ volumes:
 
 services:
   
-  My_Jenkins:
+  my_jenkins:
     image: jenkinsci/blueocean:1.16.0
     container_name: docker_jenkins
     restart: always
@@ -91,7 +91,7 @@ services:
     # - condition: service_healthy  #Sonar_wait_old
 
 
-    image: my_sonar #Sonar_wait/ definittion in data/sonar/Dockerfile
+    image: my_sonar:7.7-community #Sonar_wait/ definition in data/sonar/Dockerfile
     container_name: docker_sonar
     restart: always 
     networks: 
