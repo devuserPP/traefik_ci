@@ -1,5 +1,5 @@
 # traefik_ci
-<p><h3>Complex Contionous integration environment with traefik reverse proxy (http only)</p></h3>
+<p><h3>Complex contionous integration environment with traefik reverse proxy (http only)</p></h3>
 <p><h4>Installation Prerequisites:</h4></p>
 <p>Install docker compose according offical documentation https://docs.docker.com/compose/install/</br>
 Install Docker Community Edition (CE) documentation https://docs.docker.com/install/</p>
