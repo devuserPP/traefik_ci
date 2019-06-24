@@ -4,8 +4,8 @@
 <p>Install docker compose according offical documentation https://docs.docker.com/compose/install/</br>
 Install Docker Community Edition (CE) documentation https://docs.docker.com/install/</p>
 <h4><p>Tested version:</p></h4>
-<p>Docker Compose: 1:24</p>
-<p>Docker CE: 18.09.2</p>
+<p>Docker Compose: 1:24</br>
+Docker CE: 18.09.2</p>
 
 <h4>Installation:</h4>
 <p><code>$cd /</code> </br>
