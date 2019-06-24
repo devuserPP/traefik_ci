@@ -105,7 +105,7 @@ services:
       sonar.jdbc.password: sonar #My_DB
       sonar.jdbc.url: jdbc:postgresql://docker_postgres:5432/sonar #My_DB
    
-    entrypoint: /wait-for-postgres.sh postgres 5432 #Sonar_wait
+    entrypoint: /wait-for-it.sh docker_postgres 5432 #Sonar_wait
    
     labels:
       - traefik.backend=sonar
