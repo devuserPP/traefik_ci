@@ -1,9 +1,13 @@
 # traefik_ci
-<p><h3>Complex contionous integration environment with traefik reverse proxy (http only)</p></h3>
+<h3>Complex contionous integration environment with traefik reverse proxy (http only)</h3>
+
+
+<img src="media/traefik-ci.jpg?sanitize=true&raw=true" width="500"/>
 <p><h4>Installation Prerequisites:</h4></p>
 <p>Install docker compose according offical documentation https://docs.docker.com/compose/install/</br>
 Install Docker Community Edition (CE) documentation https://docs.docker.com/install/</p>
-<h4><p>Tested version:</p></h4>
+
+<h4>Tested version:</h4>
 <p>Docker Compose: 1:24</br>
 Docker CE: 18.09.2</p>
 
@@ -27,3 +31,6 @@ Docker CE: 18.09.2</p>
 <li>Jenkins>http://localhost:90/jenkins</li>
 <li>SonarQube>http://localhost:90/sonar</li>
 <li>Nexus>http://localhost:90/nexus</p></li>
+</ul>
+<h4>User name and password is always:</h4>
+<b>admin:admin</b>
