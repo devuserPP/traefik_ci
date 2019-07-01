@@ -23,7 +23,8 @@ Docker CE: 18.09.2</p>
 
 <h4>Now we try to start aplications which will be accesible over treafik proxy:</h4>
 <p><code>$cd / </code></br>
-<code>$cd /my_project/traefik_ci/app </code></br>
+<code>$cd /my_project/traefik_ci/app</code></br>
+<code>$docker volume create --name=pgdata</code></br>
 <code>$docker-compose up -d --force-recreate --build </code></br></p>
 
 <h4>after some wait we should be able run following applications:</h4>
