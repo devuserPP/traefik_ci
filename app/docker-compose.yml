@@ -39,7 +39,7 @@ volumes:
 
 services:
   
-  My_Jenkins:
+  my_Jenkins:
     image: jenkinsci/blueocean:1.17.0
     container_name: docker_jenkins
     restart: always
