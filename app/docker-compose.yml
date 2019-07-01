@@ -18,6 +18,7 @@
 #$Sonar_wait
 #-Sonar will wait until postgress will be up
 #-added sh script in Dockerfile for Sonar
+#-does not work in this case
 
 #$Sonar_wait_old
 #- Sonar solution working for Docker compose until version 2.4
@@ -39,7 +40,7 @@ volumes:
 services:
   
   My_Jenkins:
-    image: jenkinsci/blueocean:1.16.0
+    image: jenkinsci/blueocean:1.17.0
     container_name: docker_jenkins
     restart: always
     # check if the path realy exists on host 
@@ -105,7 +106,8 @@ services:
       sonar.jdbc.password: sonar #My_DB
       sonar.jdbc.url: jdbc:postgresql://docker_postgres:5432/sonar #My_DB
    
-    entrypoint: /wait-for-it.sh docker_postgres 5432 #Sonar_wait
+    #entrypoint: wait-for-it.sh docker_postgres:5432 #Sonar_wait
+    #command: ["./wait-for-it.sh", "docker_postgres:5432", "--", "echo", "db is running now"]
    
     labels:
       - traefik.backend=sonar
