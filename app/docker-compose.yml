@@ -92,7 +92,7 @@ services:
     # - condition: service_healthy  #Sonar_wait_old
 
 
-    image: my_sonar #Sonar_wait/ definittion in data/sonar/Dockerfile
+    image: my_sonar:7.7-community #Sonar_wait/ definition in data/sonar/Dockerfile
     container_name: docker_sonar
     restart: always 
     networks: 
@@ -131,25 +131,28 @@ services:
       POSTGRES_PASSWORD: sonar #My_DB
       POSTGRES_DB: sonar #My_DB
 
-  healthcheck:                                          #Sonar_wait_old
+# My_DB/Windows10 PRO 
+# error data directory "/var/lib/postgresql/data" has wrong ownership  
+# you have to create volume manualy with $docker volume create --name=pgdata
+# than you can run $docker-compose up -d --force-recreate
+#    
+    volumes: 
+    - pgdata:/var/lib/postgresql/data
+
+
+ #My_DB/Linux Solution
+ #   volumes: #My_DB
+ #     - ./data/postgres/data:/var/lib/postgresql #My_DB
+
+
+    healthcheck:                                        #Sonar_wait_old
       test: ["CMD-SHELL", "pg_isready -U postgres"]     #Sonar_wait_old
       interval: 5s                                      #Sonar_wait_old
       timeout: 5s                                       #Sonar_wait_old
       retries: 5                                        #Sonar_wait_old
 
  
- #My_DB/Linux Solution
- #   volumes: #My_DB
- #     - ./data/postgres/data:/var/lib/postgresql #My_DB
- 
 
 
-# My_DB/Windows10 PRO 
-# error data directory "/var/lib/postgresql/data" has wrong ownership  
-# you have to create volume manualy with $docker volume create --name=pgdata
-# than you can run $docker-compose up -d --force-recreate
-#    
-  volumes: 
-    - pgdata:/var/lib/postgresql/data
 
 
