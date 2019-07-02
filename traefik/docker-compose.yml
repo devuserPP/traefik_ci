@@ -18,7 +18,10 @@ networks:
 
 services:
   proxy:
+    env_file: 
+      - ../version.env
     #source https://github.com/containous/traefik
+    #image: "traefik:${traefik_TAG}"
     image: traefik:v1.7.12-alpine
     #you can set traefik with command, but I prefare use "traefik.toml"
     container_name: docker_proxy
