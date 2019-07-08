@@ -73,7 +73,8 @@ services:
 
 
   my_pontainer:
-    image: portainer/portainer
+    #source: https://github.com/portainer/portainer/releases
+    image: portainer/portainer:1.21.0
     container_name: docker_portainer
     restart: always 
     volumes:
