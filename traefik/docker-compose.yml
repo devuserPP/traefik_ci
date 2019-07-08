@@ -8,6 +8,8 @@
 #$Traefik\Windows 10 Pro
 #$Traefik\domain 
 #- dev.local comes from ../config/traefik.toml {docker.domain = "dev.local"}
+#Env_File
+#you can debug with $docker-compose config
 
 version: '3.7'
 
@@ -17,11 +19,11 @@ networks:
     driver: bridge
 
 services:
-  proxy:
-    env_file: 
-      - ../version.env
+  my_proxy:
+    env_file:                                           #Env_File
+      - ../version/.env                                 #Env_File
     #source https://github.com/containous/traefik
-    #image: "traefik:${traefik_TAG}"
+    #image: traefik:${TRAEFIK_VERSION}                   #Env_File
     image: traefik:v1.7.12-alpine
     #you can set traefik with command, but I prefare use "traefik.toml"
     container_name: docker_proxy
@@ -68,3 +70,31 @@ services:
       - "traefik.frontend.rule=Host:monitor.dev.local"  #Traefik\domain
       - "traefik.docker.network=webgateway"
 
+
+
+  my_pontainer:
+    image: portainer/portainer
+    container_name: docker_portainer
+    restart: always 
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer:/data    
+   # environment:
+
+    networks:
+      - webgateway
+
+    labels:
+      - traefik.backend=portainer
+      - traefik.docker.network=traefik_webgateway
+      - traefik.frontend.rule=Host:portainer.dev.local #Traefik\domain
+      - traefik.port=9000
+      - traefik.enable=true
+      - traefik.portainer.frontend.rule=PathPrefix:/portainer
+      
+    ports:
+      - target: 9000
+        published: 9000
+        mode: host
+
+    command: -H unix:///var/run/docker.sock
