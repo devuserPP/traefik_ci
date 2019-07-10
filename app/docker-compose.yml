@@ -1,7 +1,9 @@
 # run first $docker-compose up -d --force-recreate in folder "traefik", at this time network "traefik_webgateway" does not exists
-# run this again with $docker-compose up -d --force-recreate
+# run this again with $docker-compose up -d --force-recreate --build
+
 # troubleshooting with $docker logs -f docker_xxx
-# log into container $docker exec -it docker_xxx
+# log into container as root $docker exec -it --user root docker_xxx /bin/bash
+# to check syntax use $docker-compose config
 
 #Used tags:
 
@@ -24,6 +26,12 @@
 #- Sonar solution working for Docker compose until version 2.4
 #- Added depens on + condition for healthy check in service my_sonar
 #- Added healthy check in service my_db
+
+#Jenkins_Autoupdate/Supercronic
+#source https://github.com/aptible/supercronic
+
+#Jenkins_Autoupdate/Old
+
 version: '3.7'
 
 networks:
@@ -40,7 +48,9 @@ volumes:
 services:
   
   my_jenkins:
-    image: jenkinsci/blueocean:1.17.0
+    build: 
+      context: ./data/jenkins/config #Jenkins_Autoupdate/
+    #image: jenkinsci/blueocean:1.17.0
     container_name: docker_jenkins
     restart: always
     # check if the path realy exists on host 
@@ -62,6 +72,12 @@ services:
     environment:
       JENKINS_OPTS: --prefix=/jenkins
       JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dhudson.footerURL=http://dev.local" #Traefik\domain
+
+
+    #command: ["supercronic", "/etc/crontab"] #Jenkins_Autoupdate/Supercronic
+    #command: ["crond", "-l", "2", "-L", "/var/jenkins_home/logs/cron.log"] #Jenkins_Autoupdate/Old
+    
+ 
       
   my_nexus:
     image: sonatype/nexus3:3.16.2
@@ -150,9 +166,3 @@ services:
       interval: 5s                                      #Sonar_wait_old
       timeout: 5s                                       #Sonar_wait_old
       retries: 5                                        #Sonar_wait_old
-
- 
-
-
-
-
