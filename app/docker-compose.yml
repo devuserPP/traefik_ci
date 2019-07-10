@@ -166,3 +166,19 @@ services:
       interval: 5s                                      #Sonar_wait_old
       timeout: 5s                                       #Sonar_wait_old
       retries: 5                                        #Sonar_wait_old
+
+
+  my_watchtower:
+    image: v2tec/watchtower
+    command: --interval 900 --label-enable --cleanup
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+    restart: unless-stopped
+
+    networks: 
+      - private
+      - public 
+
+    
