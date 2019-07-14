@@ -1,2 +1,2 @@
-# Run every minute
-*/1 * * * * echo "hello world"
+# Run every 15 minutes witt timeout 5 minutes (900s)
+*/15 * * * * timeout -s 2 900 jenkins_update.sh

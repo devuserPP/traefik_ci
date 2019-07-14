@@ -29,6 +29,13 @@
 
 #Jenkins_Autoupdate/Supercronic
 #source https://github.com/aptible/supercronic
+#solution comes with overriding entrypoint for docker image "jenkinsci/blueocean" with docker-entrypoint.sh 
+#and run at first crontab and after it "/usr/local/bin/jenkins.sh"
+#after docker inspect of jenkinsci/blueocean I can see entrypoint "/usr/local/bin/jenkins.sh" it starts like first after docker run
+#in "/usr/local/bin/jenkins.sh" I can see "if [[ $# -lt 1 ]] || [[ "$1" == "--"* ]];" if its true jeninks start, but Its not
+#condition is not true, becouse when add crontab in docker file "CMD ["supercronic", "/etc/crontab"]" it starts with 
+# "/usr/local/bin/jenkins.sh "supercronic" "/etc/crontab""
+
 
 #Jenkins_Autoupdate/Old
 
