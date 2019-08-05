@@ -1,6 +1,7 @@
 # run first $docker-compose up -d --force-recreate in folder "traefik", at this time network "traefik_webgateway" does not exists
 # run this again with $docker-compose up -d --force-recreate
 # troubleshooting with $docker logs -f docker_proxy
+# checking variables in "docker-compose.yml" $docker-compose config
 # log into container $docker exec -it docker_proxy /bin/sh
 
 #Used_tags:
@@ -18,11 +19,13 @@ networks:
 
 services:
   proxy:
+    #does not work, waiting for next version. 
+    #for solving issue I putted env file into root
     env_file: 
-      - ../version.env
+      - ../versions/.env
     #source https://github.com/containous/traefik
-    #image: "traefik:${traefik_TAG}"
-    image: traefik:v1.7.12-alpine
+    image: "traefik:${TRAEFIK_VERSION}"
+    #image: traefik:v1.7.12-alpine
     #you can set traefik with command, but I prefare use "traefik.toml"
     container_name: docker_proxy
     # command:
