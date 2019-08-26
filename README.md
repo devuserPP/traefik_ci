@@ -20,9 +20,18 @@ Docker CE: 18.09.2</p>
 <code>$cd my_project</code></br>
 <code>$git clone https://github.com/devuserPP/traefik_ci.git</code></br>
 <code>$cd traefik</code></br>
+<h4>Started by script:</h4>
+<code>$chmod +x ./start.sh</code></br>
+<code>$./start.sh</code></br>
+<BR>
+or if you need change Dockerfile and rebuild it </br>
+<code>$./start.sh rebuild</code></br>
+
+
+<h4>Manualy started:</h4>
 <code>$docker-compose up -d --force-recreate</code></p>
 
-<b> Traefik should start and could be accesible on http://localhost:8090/dasboard </b>
+<b> Traefik should start and could be accesible on http://localhost:8090/dasboard <b>
 
 <h4>Now we try to start aplications which will be accesible over treafik proxy:</h4>
 <p><code>$cd / </code></br>
