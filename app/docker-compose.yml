@@ -48,7 +48,7 @@ networks:
       name: traefik_webgateway
 
 volumes:
-  jenkins-data:            
+ # jenkins-data:            
   pgdata: #My_DB/Windows10 PRO 
     external: true  #My_DB/Windows10 PRO 
 
@@ -63,7 +63,7 @@ services:
     # check if the path realy exists on host 
     # $cd $PWD/data/jenkins/home-data 
     volumes:
-      - ./data/jenkins/home-data:/var/jenkins_home
+      - ./data/jenkins/jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock      
       - ./data/jenkins/config:/usr/share/jenkins/ref/init.groovy.d/ 
     labels:
