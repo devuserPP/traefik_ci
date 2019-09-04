@@ -57,7 +57,7 @@ services:
   my_jenkins:
     build: 
       context: ./data/jenkins/config #Jenkins_Autoupdate/
-    #image: jenkinsci/blueocean:1.17.0
+    #image: jenkinsci/blueocean:1.19.0
     container_name: docker_jenkins
     restart: always
     # check if the path realy exists on host 

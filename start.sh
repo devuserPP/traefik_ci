@@ -7,13 +7,12 @@ postgres_volume=pgdata
 param=$1
 jenkins_home=./app/data/jenkins/jenkins_home
  
-# [ "$d" == "" ] && { echo "Usage: $0 directory"; exit 1; }
-# [ -d "${d}" ] &&  echo "Directory $d found." || echo "Directory $d not found."
+
 
 
 #problem with maping jenkins volume
 #inside container is used default user jenkins UID:GUI 1000:1000
-#on the host must has this user permission for jenkins home
+#on the host must have this user permission for jenkins home
 
 #create folder
 #$mkdir ./app/data/jenkins/jenkins_home
@@ -56,8 +55,8 @@ docker volume inspect ${postgres_volume} >/dev/null || docker volume create --na
 
 if [ "$param" == "rebuild" ]; then  
     echo "Rebuilding Docker images"
-    docker-compose --file ${traefik_compose_file} up -d --force-recreate --$1 
-    docker-compose --file ${app_compose_file} up -d --force-recreate --$1
+    docker-compose --file ${traefik_compose_file} up -d --force-recreate --build 
+    docker-compose --file ${app_compose_file} up -d --force-recreate --build
     else
     echo "Without rebulding Docker images if already exists"
     docker-compose --file ${traefik_compose_file} up -d --force-recreate

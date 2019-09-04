@@ -1,4 +1,4 @@
-FROM jenkinsci/blueocean:1.17.0
+FROM jenkinsci/blueocean:1.19.0
 
 #Jenkins_Autoupdate/Supercronic
 #*****************************
