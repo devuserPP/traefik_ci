@@ -21,6 +21,20 @@ COPY docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
 
+
+
+
+#$docker exec -it docker_jenkins bash
+#$docker info
+
+#can see that user jenkins does not have permission to run "docker info"
+#$ls -all /var/run/docker.sock
+
+#can see that only user=root and group=root have RW permission
+
+# Add user jenkins inside group "root"
+RUN adduser jenkins root
+
 USER jenkins
 
 

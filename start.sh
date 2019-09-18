@@ -62,4 +62,3 @@ if [ "$param" == "rebuild" ]; then
     docker-compose --file ${traefik_compose_file} up -d --force-recreate
     docker-compose --file ${app_compose_file} up -d --force-recreate
     fi
-
