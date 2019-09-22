@@ -26,7 +26,7 @@ jenkins_home=./app/data/jenkins/jenkins_home
 if [ -d ${jenkins_home} ]; then
     echo ${jenkins_home} "Directory exists. Nothing to do" 
 else
-    echo "Settiong directory for jenkins_home."
+    echo "Setting directory for jenkins_home."
     mkdir ${jenkins_home}
     cd ${jenkins_home}
     chown -R 1000:1000 ${PWD}
@@ -38,9 +38,6 @@ else
 fi
 
 
-HOST_UID_GID=$(echo $(id -u):$(id -g))
-export HOST_UID_GID
-echo ${HOST_UID_GID}
 
 
 
@@ -61,4 +58,17 @@ if [ "$param" == "rebuild" ]; then
     echo "Without rebulding Docker images if already exists"
     docker-compose --file ${traefik_compose_file} up -d --force-recreate
     docker-compose --file ${app_compose_file} up -d --force-recreate
-    fi
+
+fi
+
+#check if docker client (docker info inside container "docker_jenkins") can connect to docker host
+#UID:GID from container
+# docker exec -it docker_jenkins id
+
+#UID:GID from docker host
+# HOST_UID_GID=$(echo $(id -u):$(id -g))
+# export HOST_UID_GID
+# echo ${HOST_UID_GID}
+
+#change permission for connection docker client (from container "docker_jenkins") to docker host
+#sudo chown 1000:1000 /var/run/docker.sock
