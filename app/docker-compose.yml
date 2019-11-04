@@ -1,8 +1,8 @@
 # run first $docker-compose up -d --force-recreate in folder "traefik", at this time network "traefik_webgateway" does not exists
 # run this again with $docker-compose up -d --force-recreate --build
 
-# troubleshooting with $docker logs -f docker_xxx
-# log into container as root $docker exec -it --user root docker_xxx /bin/bash
+# troubleshooting with $docker logs -f docker-xxx
+# log into container as root $docker exec -it --user root docker-xxx /bin/bash
 # to check syntax use $docker-compose config
 
 #Used tags:
@@ -58,7 +58,7 @@ services:
     build: 
       context: ./data/jenkins/config #Jenkins_Autoupdate/
     #image: jenkinsci/blueocean:1.19.0
-    container_name: docker_jenkins
+    container_name: docker-jenkins
     restart: always
     # check if the path realy exists on host 
     # $cd $PWD/data/jenkins/home-data 
@@ -71,14 +71,15 @@ services:
       - "traefik.enable=true"
       - "traefik.port=8080"
       - "traefik.docker.network=traefik_webgateway"
-      - "traefik.jenkins.frontend.rule=Host:jenins.dev.local" #Traefik\domain
+      - "traefik.jenkins.frontend.rule=Host:jenkins.dev.local" #Traefik\domain
       - "traefik.jenkins.frontend.rule=PathPrefix:/jenkins"      
     networks:
       - private
       - public      
     environment:
       JENKINS_OPTS: --prefix=/jenkins
-      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dhudson.footerURL=http://dev.local" #Traefik\domain
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dhudson.footerURL=http://dev.local -Duser.timezone=Europe/Prague" #Traefik\domain
+      TZ: "Europe/Prague"
 
 
     #command: ["supercronic", "/etc/crontab"] #Jenkins_Autoupdate/Supercronic
@@ -88,7 +89,7 @@ services:
       
   my_nexus:
     image: sonatype/nexus3:3.16.2
-    container_name: docker_nexus
+    container_name: docker-nexus
     restart: always
     volumes:
       - ./data/nexus/nexus-data:/nexus-data
@@ -116,7 +117,7 @@ services:
 
 
     image: my_sonar:7.7-community #Sonar_wait/ definition in data/sonar/Dockerfile
-    container_name: docker_sonar
+    container_name: docker-sonar
     restart: always 
     networks: 
       - private
@@ -127,10 +128,10 @@ services:
       sonar.web.context: /sonar
       sonar.jdbc.username: sonar #My_DB
       sonar.jdbc.password: sonar #My_DB
-      sonar.jdbc.url: jdbc:postgresql://docker_postgres:5432/sonar #My_DB
+      sonar.jdbc.url: jdbc:postgresql://docker-postgres:5432/sonar #My_DB
    
-    #entrypoint: wait-for-it.sh docker_postgres:5432 #Sonar_wait
-    #command: ["./wait-for-it.sh", "docker_postgres:5432", "--", "echo", "db is running now"]
+    #entrypoint: wait-for-it.sh docker-postgres:5432 #Sonar_wait
+    #command: ["./wait-for-it.sh", "docker-postgres:5432", "--", "echo", "db is running now"]
    
     labels:
       - traefik.backend=sonar
@@ -142,7 +143,7 @@ services:
 
   my_db: #My_DB
     image: postgres:11.3-alpine #My_DB
-    container_name: docker_postgres #My_DB
+    container_name: docker-postgres #My_DB
     restart: always #My_DB
     
     networks:  #My_DB
@@ -173,3 +174,17 @@ services:
       interval: 5s                                      #Sonar_wait_old
       timeout: 5s                                       #Sonar_wait_old
       retries: 5                                        #Sonar_wait_old
+
+
+
+  my_stats:
+    image: weweave/docker-container-stats
+    container_name: docker-stats
+    ports:
+      - target: 8080
+        published: 9999
+        mode: host
+    volumes:
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      

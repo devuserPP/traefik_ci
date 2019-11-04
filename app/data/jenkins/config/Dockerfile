@@ -17,6 +17,42 @@ RUN curl -fsSLO "$SUPERCRONIC_URL" \
 ADD crontab /etc/crontab
 COPY ./jenkins_update.sh /usr/local/bin/
 
+#*****************************
+#Jenkins_Install/sonar-scanner-cli
+#*****************************
+
+
+ENV VERSION=4.1.0.1829 \
+    PATH=$PATH:/opt/sonar-scanner/bin
+
+RUN wget -O /tmp/sonar.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$VERSION.zip && \
+    unzip /tmp/sonar.zip -d /tmp && \
+    mkdir -p /opt/sonar-scanner && \
+    cp -R /tmp/sonar-scanner-$VERSION/* /opt/sonar-scanner/ && \
+    rm -rf /tmp/sonar.zip
+
+#*****************************
+#Jenkins_Install/ToDO
+#*****************************
+
+copy ./sonar-scanner.properties /opt/sonar-scanner/conf/ 
+#testing
+#$sonar-scanner --version -X
+#$sonar-scanner -X
+#try rename docker-sonar to docker-sonar
+
+#config
+#https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/
+# token na sonar
+# 3f23dded147b7c0e7a62c38ec698e1621c5adf2f
+# zdroj:
+# https://funnelgarden.com/sonarqube-jenkins-docker/
+
+
+
+
+
+
 COPY docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
@@ -24,7 +60,7 @@ ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
 
 
 
-#$docker exec -it docker_jenkins bash
+#$docker exec -it docker-jenkins bash
 #$docker info
 
 #can see that user jenkins does not have permission to run "docker info"

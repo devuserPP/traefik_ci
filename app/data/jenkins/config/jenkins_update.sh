@@ -3,12 +3,12 @@
 # Description: Update all Jenkins plugin
 # Version 1.0
 
-_JENKINS_URL=http://docker_jenkins:8080/jenkins
+_JENKINS_URL=http://docker-jenkins:8080/jenkins
 _JENKINS_USER=admin
 _JENKINS_PASSWD=admin
 
 #test command
-#$java -jar jenkins-cli.jar -s http://docker_jenkins:8080/jenkins -auth admin:admin -noKeyAuth list-plugins|  grep -e ')$' | awk '{ print $1 }'
+#$java -jar jenkins-cli.jar -s http://docker-jenkins:8080/jenkins -auth admin:admin -noKeyAuth list-plugins|  grep -e ')$' | awk '{ print $1 }'
 
 
 #copy file to tmp

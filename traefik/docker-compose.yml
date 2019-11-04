@@ -1,7 +1,7 @@
 # run first $docker-compose up -d --force-recreate in folder "traefik", at this time network "traefik_webgateway" does not exists
 # run this again with $docker-compose up -d --force-recreate
-# troubleshooting with $docker logs -f docker_proxy
-# log into container $docker exec -it docker_proxy /bin/sh
+# troubleshooting with $docker logs -f docker-proxy
+# log into container $docker exec -it docker-proxy /bin/sh
 
 #Used_tags:
 #$Traefik\Linux
@@ -21,7 +21,7 @@ services:
     #source https://github.com/containous/traefik
     image: traefik:v1.7.12-alpine
     #you can set traefik with command, but I prefare use "traefik.toml"
-    container_name: docker_proxy
+    container_name: docker-proxy
     # command:
     #   - "--api" #dashboard enabled
     #   - "--entrypoints=Name:http Address::90"         #port where running proxy

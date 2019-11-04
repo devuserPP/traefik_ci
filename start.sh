@@ -6,7 +6,7 @@ app_compose_file=./app/docker-compose.yml
 postgres_volume=pgdata
 param=$1
 jenkins_home=./app/data/jenkins/jenkins_home
- 
+#TZ=$(readlink /etc/localtime | sed 's#/var/db/timezone/zoneinfo/##') 
 
 
 
@@ -19,8 +19,9 @@ jenkins_home=./app/data/jenkins/jenkins_home
 #$cd ./app/data/jenkins/jenkins_home
 #$pwd
 #$chown -R 1000:1000 /c/temp/smazat_po_testu/dd/traefik_ci/app/data/jenkins/jenkins_home
-#$chmod 777 /c/temp/smazat_po_testu/dd/traefik_ci/app/data/jenkins/jenkins_home
+#$chmod 777 -R /c/temp/smazat_po_testu/dd/traefik_ci/app/data/jenkins/jenkins_home
 #$rm -r jenkins_home
+#on Docker desktop go to settings/ shared drivers/ unselect c select again. Meabe restart docker
 
 
 if [ -d ${jenkins_home} ]; then
@@ -53,7 +54,7 @@ docker volume inspect ${postgres_volume} >/dev/null || docker volume create --na
 if [ "$param" == "rebuild" ]; then  
     echo "Rebuilding Docker images"
     docker-compose --file ${traefik_compose_file} up -d --force-recreate --build 
-    docker-compose --file ${app_compose_file} up -d --force-recreate --build
+    docker-compose --file ${app_compose_file} up -d --force-recreate --build 
     else
     echo "Without rebulding Docker images if already exists"
     docker-compose --file ${traefik_compose_file} up -d --force-recreate
@@ -61,14 +62,14 @@ if [ "$param" == "rebuild" ]; then
 
 fi
 
-#check if docker client (docker info inside container "docker_jenkins") can connect to docker host
+#check if docker client (docker info inside container "docker-jenkins") can connect to docker host
 #UID:GID from container
-# docker exec -it docker_jenkins id
+# docker exec -it docker-jenkins id
 
 #UID:GID from docker host
 # HOST_UID_GID=$(echo $(id -u):$(id -g))
 # export HOST_UID_GID
 # echo ${HOST_UID_GID}
 
-#change permission for connection docker client (from container "docker_jenkins") to docker host
+#change permission for connection docker client (from container "docker-jenkins") to docker host
 #sudo chown 1000:1000 /var/run/docker.sock
