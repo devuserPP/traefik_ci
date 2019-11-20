@@ -50,7 +50,7 @@ docker network inspect ${my_network} >/dev/null || docker network create --drive
 docker volume inspect ${postgres_volume} >/dev/null || docker volume create --name=${postgres_volume}
 
 
-
+#user param rebuild for updating docker images
 if [ "$param" == "rebuild" ]; then  
     echo "Rebuilding Docker images"
     docker-compose --file ${traefik_compose_file} up -d --force-recreate --build 

@@ -78,19 +78,21 @@ services:
       - public      
     environment:
       JENKINS_OPTS: --prefix=/jenkins
-      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dhudson.footerURL=http://dev.local -Duser.timezone=Europe/Prague" #Traefik\domain
+      JAVA_OPTS: "-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false -Dhudson.footerURL=http://dev.local -Duser.timezone=Europe/Prague" #Traefik\domain
       TZ: "Europe/Prague"
 
-
+   
     #command: ["supercronic", "/etc/crontab"] #Jenkins_Autoupdate/Supercronic
     #command: ["crond", "-l", "2", "-L", "/var/jenkins_home/logs/cron.log"] #Jenkins_Autoupdate/Old
     
  
       
   my_nexus:
-    image: sonatype/nexus3:3.16.2
+    build: 
+      context: ./data/nexus/config #nexus_change_pass/
+    # image: sonatype/nexus3:3.19.1
     container_name: docker-nexus
-    restart: always
+    restart: always 
     volumes:
       - ./data/nexus/nexus-data:/nexus-data
     environment:
@@ -106,8 +108,10 @@ services:
       - traefik.enable=true
       - traefik.nexus.frontend.rule=PathPrefix:/nexus
 
+    #command: ["wait-for-it.sh", "docker-nexus:8081/nexus", "--timeout=20", "--", "./opt/change_pass/provision.sh"]
 
-  my_sonar:
+
+  my-sonar:
     build: #Sonar_wait
       context: ./data/sonar/config #Sonar_wait
     
@@ -126,12 +130,14 @@ services:
    
     environment: 
       sonar.web.context: /sonar
+      sonar.web.port: 9000
       sonar.jdbc.username: sonar #My_DB
       sonar.jdbc.password: sonar #My_DB
       sonar.jdbc.url: jdbc:postgresql://docker-postgres:5432/sonar #My_DB
    
     #entrypoint: wait-for-it.sh docker-postgres:5432 #Sonar_wait
-    #command: ["./wait-for-it.sh", "docker-postgres:5432", "--", "echo", "db is running now"]
+
+    command: ["./wait-for-it.sh", "docker-postgres:5432", "--", "echo", "db is running now"]
    
     labels:
       - traefik.backend=sonar

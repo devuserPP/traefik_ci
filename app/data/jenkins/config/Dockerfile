@@ -60,6 +60,33 @@ ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
 
 
 
+#*****************************
+#Nexus_Install/groovy
+#*****************************
+user root
+
+ARG GROOVY_VERSION=2.5.8
+
+
+ENV GROOVY_HOME=/opt/groovy-$GROOVY_VERSION/ \
+    PATH=/opt/groovy-$GROOVY_VERSION/bin:$PATH
+
+
+RUN wget -O /tmp/groovy-$GROOVY_VERSION.zip https://dl.bintray.com/groovy/maven/apache-groovy-binary-$GROOVY_VERSION.zip && \
+unzip /tmp/groovy-$GROOVY_VERSION.zip && \
+mv groovy-$GROOVY_VERSION /opt && \
+rm -rf /tmp/groovy-$GROOVY_VERSION.zip
+
+COPY change_pass /opt/change_pass
+RUN ls /opt
+ADD wait-for-it.sh /bin/wait-for-it.sh
+RUN chmod 775 /bin/wait-for-it.sh && \
+    chmod 775 /opt/change_pass/provision.sh
+RUN echo "exec ./opt/change_pass/provision.sh" >> /usr/local/bin/jenkins.sh
+# RUN echo "wait-for-it.sh docker-nexus:8081/nexus --timeout=20 -- ./opt/change_pass/provision.sh" >> /usr/local/bin/jenkins.sh
+
+
+
 #$docker exec -it docker-jenkins bash
 #$docker info
 
