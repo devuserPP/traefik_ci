@@ -1,7 +1,16 @@
-FROM jenkinsci/blueocean:1.19.0
-
-#Jenkins_Autoupdate/Supercronic
 #*****************************
+#Jenkins/ToDO
+#*****************************
+
+FROM jenkinsci/blueocean:1.21.0
+
+
+
+#*****************************
+#Jenkins_install/Supercronic
+#*****************************
+
+# setting for run shell script "jenkins_update.sh" every 15 minutes - for updating jenkins plugins
 
 USER root
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.9/supercronic-linux-amd64 \
@@ -18,10 +27,25 @@ ADD crontab /etc/crontab
 COPY ./jenkins_update.sh /usr/local/bin/
 
 #*****************************
+#Jenkins_config/Supercronic
+#*****************************
+# modification of entrypoint to run supercronic during the start of this container
+
+COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
+
+
+#*****************************
+#Jenkins_Install/maven
+#*****************************
+RUN apk add maven
+
+
+
+#*****************************
 #Jenkins_Install/sonar-scanner-cli
 #*****************************
-
-
 ENV VERSION=4.1.0.1829 \
     PATH=$PATH:/opt/sonar-scanner/bin
 
@@ -31,62 +55,16 @@ RUN wget -O /tmp/sonar.zip https://binaries.sonarsource.com/Distribution/sonar-s
     cp -R /tmp/sonar-scanner-$VERSION/* /opt/sonar-scanner/ && \
     rm -rf /tmp/sonar.zip
 
-#*****************************
-#Jenkins_Install/ToDO
-#*****************************
-
 copy ./sonar-scanner.properties /opt/sonar-scanner/conf/ 
-#testing
-#$sonar-scanner --version -X
-#$sonar-scanner -X
-#try rename docker-sonar to docker-sonar
-
-#config
-#https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/
-# token na sonar
-# 3f23dded147b7c0e7a62c38ec698e1621c5adf2f
-# zdroj:
-# https://funnelgarden.com/sonarqube-jenkins-docker/
-
-
-
-
-
-
-COPY docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
-ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
-
 
 
 
 #*****************************
-#Nexus_Install/groovy
+#Jenkins/change permission
 #*****************************
-user root
+# default user "jenkins" inside this container does not have access for /var/run/docker.sock 
 
-ARG GROOVY_VERSION=2.5.8
-
-
-ENV GROOVY_HOME=/opt/groovy-$GROOVY_VERSION/ \
-    PATH=/opt/groovy-$GROOVY_VERSION/bin:$PATH
-
-
-RUN wget -O /tmp/groovy-$GROOVY_VERSION.zip https://dl.bintray.com/groovy/maven/apache-groovy-binary-$GROOVY_VERSION.zip && \
-unzip /tmp/groovy-$GROOVY_VERSION.zip && \
-mv groovy-$GROOVY_VERSION /opt && \
-rm -rf /tmp/groovy-$GROOVY_VERSION.zip
-
-COPY change_pass /opt/change_pass
-RUN ls /opt
-ADD wait-for-it.sh /bin/wait-for-it.sh
-RUN chmod 775 /bin/wait-for-it.sh && \
-    chmod 775 /opt/change_pass/provision.sh
-RUN echo "exec ./opt/change_pass/provision.sh" >> /usr/local/bin/jenkins.sh
-# RUN echo "wait-for-it.sh docker-nexus:8081/nexus --timeout=20 -- ./opt/change_pass/provision.sh" >> /usr/local/bin/jenkins.sh
-
-
-
+# testing
 #$docker exec -it docker-jenkins bash
 #$docker info
 
@@ -95,10 +73,12 @@ RUN echo "exec ./opt/change_pass/provision.sh" >> /usr/local/bin/jenkins.sh
 
 #can see that only user=root and group=root have RW permission
 
-# Add user jenkins inside group "root"
+
+# no good solution add user jenkins inside group "root"
 RUN adduser jenkins root
 
 USER jenkins
+
 
 
 #///////////////////////////////

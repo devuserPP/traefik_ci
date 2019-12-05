@@ -37,6 +37,7 @@ if [ ! -f /tmp/sonar.setting ]; then echo "Runing the Script for first time"
 
   printf "Provisioning Integration API Scripts Starting \n\n"
   printf "Publishing and executing on $host\n"
+  wait-for-it.sh docker-nexus:8081/nexus --timeout=20 -- echo "is up"
 
   addAndRunScript security security.groovy
 
