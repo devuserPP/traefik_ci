@@ -54,7 +54,7 @@ volumes:
 
 services:
   
-  my_jenkins:
+  my-jenkins:
     build: 
       context: ./data/jenkins/config #Jenkins_Autoupdate/
     #image: jenkinsci/blueocean:1.19.0
@@ -87,7 +87,7 @@ services:
     
  
       
-  my_nexus:
+  my-nexus:
     build: 
       context: ./data/nexus/config #nexus_change_pass/
     # image: sonatype/nexus3:3.19.1
@@ -119,8 +119,8 @@ services:
     # - 'My_DB'                     #Sonar_wait_old
     # - condition: service_healthy  #Sonar_wait_old
 
-
-    image: my_sonar:7.7-community #Sonar_wait/ definition in data/sonar/Dockerfile
+    #Sonar_wait/ definition in data/sonar/Dockerfile
+    #image: my_sonar:7.7-community 
     container_name: docker-sonar
     restart: always 
     networks: 
@@ -135,9 +135,8 @@ services:
       sonar.jdbc.password: sonar #My_DB
       sonar.jdbc.url: jdbc:postgresql://docker-postgres:5432/sonar #My_DB
    
-    #entrypoint: wait-for-it.sh docker-postgres:5432 #Sonar_wait
 
-    command: ["./wait-for-it.sh", "docker-postgres:5432", "--", "echo", "db is running now"]
+    #command: ["wait-for-it.sh", "docker-postgres:5432", "--", "echo", "db is running now"]
    
     labels:
       - traefik.backend=sonar
@@ -147,7 +146,7 @@ services:
       - traefik.enable=true
       - traefik.sonar.frontend.rule=PathPrefix:/sonar
 
-  my_db: #My_DB
+  my-db: #My_DB
     image: postgres:11.3-alpine #My_DB
     container_name: docker-postgres #My_DB
     restart: always #My_DB
@@ -183,7 +182,7 @@ services:
 
 
 
-  my_stats:
+  my-stats:
     image: weweave/docker-container-stats
     container_name: docker-stats
     ports:
