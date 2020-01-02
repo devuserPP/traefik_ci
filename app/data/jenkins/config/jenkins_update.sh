@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Sharad Chhetri
-# Description: Update all Jenkins plugins
+# Description: Update all installed Jenkins plugins
 # Version 1.0
 
 _JENKINS_URL=http://docker-jenkins:8080/jenkins
