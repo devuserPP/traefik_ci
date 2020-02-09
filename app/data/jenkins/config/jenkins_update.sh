@@ -1,5 +1,4 @@
 #!/bin/bash
-# Author: Sharad Chhetri
 # Description: Update all installed Jenkins plugins
 # Version 1.0
 
