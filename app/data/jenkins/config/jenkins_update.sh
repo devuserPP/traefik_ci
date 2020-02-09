@@ -8,7 +8,8 @@ _JENKINS_USER=admin
 _JENKINS_PASSWD=admin
 
 #test command
-#$java -jar jenkins-cli.jar -s http://docker-jenkins:8080/jenkins -auth admin:admin -noKeyAuth list-plugins|  grep -e ')$' | awk '{ print $1 }'
+#java -jar jenkins-cli.jar -s "http://docker-jenkins:8080/jenkins" -auth admin:admin -noKeyAuth install-plugin $(java -jar ./jenkins-cli.jar -s "http://docker-jenkins:8080/jenkins" -auth admin:admin -noKeyAuth list-plugins| awk '{ print $1 }')
+
 
 
 #copy file to tmp
