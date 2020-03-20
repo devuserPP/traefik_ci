@@ -1,4 +1,4 @@
 ./app/data/jenkins/jenkins_home
 ./app/data/nexus/nexus-data
-test.sh
+.//app/data/portainer/poratiner-data
 *.todo

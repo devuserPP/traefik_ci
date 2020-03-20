@@ -130,7 +130,7 @@ services:
    
     environment: 
       sonar.web.context: /sonar
-      sonar.web.port: 9000
+      sonar.web.port: 9999
       sonar.jdbc.username: sonar #My_DB
       sonar.jdbc.password: sonar #My_DB
       sonar.jdbc.url: jdbc:postgresql://docker-postgres:5432/sonar #My_DB
@@ -142,7 +142,7 @@ services:
       - traefik.backend=sonar
       - traefik.docker.network=traefik_webgateway
       - traefik.frontend.rule=Host:sonar.dev.local #Traefik\domain
-      - traefik.port=9000
+      - traefik.port=9999
       - traefik.enable=true
       - traefik.sonar.frontend.rule=PathPrefix:/sonar
 
@@ -181,15 +181,42 @@ services:
       retries: 5                                        #Sonar_wait_old
 
 
-
-  my-stats:
-    image: weweave/docker-container-stats
-    container_name: docker-stats
-    ports:
-      - target: 8080
-        published: 9999
-        mode: host
+  my-pontainer:
+    image: portainer/portainer:latest
+    container_name: docker-portainer
+    restart: always 
     volumes:
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer/portainer-data:/data
+      - ./data/portainer/config/portainer_password:/tmp/portainer_password    
+   
+    environment:
+      - VIRTUAL_HOST=portainer.dev.local
+
+    networks: 
+      - private 
+      - public
+
+    labels:
+      - traefik.backend=portainer
+      - traefik.docker.network=traefik_webgateway
+      - traefik.frontend.rule=Host:portainer.dev.local #Traefik\domain
+      - traefik.port=9000
+      - traefik.enable=true
       
+
+    ports:
+      - "9000:9000"
+     
+
+    # command:  
+      # - -H unix:///var/run/docker.sock
+      # - --admin-password-file '/tmp/portainer_password'
+    
+    # command: --admin-password-file '/tmp/portainer_password'\ && -H unix:///var/run/docker.sock
+    
+    command: -H unix:///var/run/docker.sock
+    
+    
+
+

@@ -2,7 +2,7 @@
 #Jenkins/ToDO
 #*****************************
 
-FROM jenkinsci/blueocean:1.21.0
+FROM jenkinsci/blueocean:latest
 
 
 
