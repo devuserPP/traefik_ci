@@ -209,13 +209,9 @@ services:
       - "9000:9000"
      
 
-    # command:  
-      # - -H unix:///var/run/docker.sock
-      # - --admin-password-file '/tmp/portainer_password'
+    command: --admin-password-file '/tmp/portainer_password' -H unix:///var/run/docker.sock
     
-    # command: --admin-password-file '/tmp/portainer_password'\ && -H unix:///var/run/docker.sock
     
-    command: -H unix:///var/run/docker.sock
     
     
 
